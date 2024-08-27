@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E.L.C & P.B.E</title>
+    <style>
+        /* Reset default browser styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: #1a1a2e;
+            color: #fff;
+            line-height: 1.6;
+        }
+
+        /* Glassmorphism Effect */
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1); /* Transparent white background */
+            border-radius: 15px; /* Rounded corners */
+            backdrop-filter: blur(10px); /* Blurring the background */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Slight shadow */
+            border: 1px solid rgba(255, 255, 255, 0.2); /* Light border */
+        }
+
+        /* Navigation Bar */
+nav {
+    position: fixed; /* Stay fixed at the top */
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000; /* Ensure it stays on top */
+    display: flex;
+    align-items: center;
+    background: rgba(22, 33, 62, 0.8); /* Semi-transparent background */
+    padding: 0.5rem 1.5rem; /* Reduced padding */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    --nav-height: 60px; /* Define custom property for nav height */
+}
+
+/* First Section Padding */
+#home {
+    padding-top: 70px; /* Padding to avoid overlap and extra spacing */
+    margin-top: 0; /* No negative margin */
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    nav {
+        --nav-height: 50px; /* Adjust for smaller screens */
+    }
+}
+
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        nav .logo img {
+            height: 40px; /* Adjusted height */
+            width: 40px;  /* Adjusted width */
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 1rem; /* Add some space between the logo and the text */
+        }
+
+        nav h1 {
+            font-size: 1rem; /* Adjusted font size */
+            color: #fff;
+        }
+
+        nav .nav-links {
+            display: flex;
+            align-items: center;
+            margin-left: auto;
+        }
+
+        nav .nav-links a {
+            margin-left: 1.5rem; /* Adjusted spacing */
+            text-decoration: none;
+            color: #e94560;
+            font-size: 0.9rem; /* Reduced font size */
+            font-weight: bold; /* Makes the font bold */
+            transition: color 0.3s, transform 0.3s;
+        }
+
+        nav .nav-links a:hover {
+            color: #ffcc00;
+            transform: scale(1.1);
+        }
+
+        /* Sections */
+        .section {
+            min-height: 100vh;
+            padding: 2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background 0.5s;
+        }
+
+        /* Section Backgrounds */
+        .home-section {
+            background: linear-gradient(145deg, #0f3460, #1a1a2e);
+        }
+
+        .about-section {
+            background: linear-gradient(145deg, #16213e, #09a141);
+        }
+
+        .contact-section {
+            background: linear-gradient(145deg, #a1b811, #16213e);
+        }
+
+        /* Section Content */
+        .home-content, .about-content, .contact-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            max-width: 1200px;
+            gap: 2rem;
+        }
+
+        .home-content h1 {
+            color: #ffcc00;
+            font-size: 2rem; /* Adjusted font size for smaller screens */
+        }
+
+        .home-content p {
+            color: #ffffff;
+            font-size: 1.5rem;
+            padding: 1rem;
+             /* Adjusted font size for smaller screens */
+
+             /* Adjusted font size for smaller screens */
+        }
+
+        /* Cards Container */
+        .cards-container {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        /* Card Styles */
+        .card {
+            background: rgba(22, 33, 62, 0.7); /* Semi-transparent background for cards */
+            border-radius: 35px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s, box-shadow 0.3s;
+            overflow: hidden;
+            width: 400px;
+            max-width: 90%; /* Responsive max-width */
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .card-content {
+            padding: 1.2rem;
+            color: #fff;
+        }
+
+        .card-content h2 {
+            font-size: 1.8rem; /* Reduced font size */
+            margin-bottom: 0.2rem;
+            color: #e94560;
+            
+        }
+
+        .card-content p {
+            margin: 0.8rem;
+            font-size: 1.2rem; /* Adjusted font size */
+            font-weight: bolder;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.5rem 1rem;
+            background-color: #e94560;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #ffcc00;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .home-content, .about-content, .contact-content {
+                text-align: center;
+            }
+
+            .cards-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .card {
+                width: 100%;
+                max-width: 350px;
+            }
+
+            nav .logo img {
+                height: 30px; /* Adjusted height for smaller screens */
+                width: 30px;  /* Adjusted width for smaller screens */
+            }
+
+            nav h1 {
+                color: #ffcc00;
+                font-size: 2rem; /* Adjusted font size for smaller screens */
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="glass-effect">
+        <div class="logo-container">
+            <div class="logo">
+                <img src="{{ url_for('static', filename='logo.jpg') }}" alt="Logo">
+            </div>
+            <h1>Electricity Load Calculator & Power Bill Estimator</h1>
+        </div>
+        
+        <div class="nav-links">
+            <a href="#home">Home</a>
+            <a href="#about">About Us</a>
+            <a href="#contact">Contact Us</a>
+        </div>
+    </nav>
+
+    <!-- Home Section -->
+    <section id="home" class="section home-section">
+        <div class="home-content">
+          <!-- Power Factor and Maximum kVA -->
+        <table>
+            <tr>
+                <th>
+                    <h2>Maximum kVA Value</h2>
+                    <form id="max-kva-form">
+                        <label for="max-kva">Maximum kVA:</label>
+                        <input type="number" id="max-kva" step="0.01" min="0.01" value="1" required>
+                    </form>
+                </th>
+                <th>
+                    <h2>Power Factor</h2>
+                    <form id="power-factor-form">
+                        <label for="power-factor">Power Factor:</label>
+                        <input type="number" id="power-factor" step="0.01" min="0.1" max="1.0" value="0.8" required>
+                    </form>
+                </th>
+            </tr>
+        </table>
+
+        <!-- Appliance List -->
+        <h2>Available Appliances</h2>
+        <div class="appliance-grid">
+            <div class="appliance-item"><p>Bulb<br>10 Watts</p><button class="add-appliance" data-name="Bulb" data-load="10">Add</button></div>
+            <div class="appliance-item"><p>Fan<br>75 Watts</p><button class="add-appliance" data-name="Fan" data-load="75">Add</button></div>
+            <div class="appliance-item"><p>AC<br>1500 Watts</p><button class="add-appliance" data-name="AC" data-load="1500">Add</button></div>
+            <div class="appliance-item"><p>Refrigerator<br>200 Watts</p><button class="add-appliance" data-name="Refrigerator" data-load="200">Add</button></div>
+            <div class="appliance-item"><p>Washing Machine<br>500 Watts</p><button class="add-appliance" data-name="Washing Machine" data-load="500">Add</button></div>
+            <div class="appliance-item"><p>Microwave<br>1200 Watts</p><button class="add-appliance" data-name="Microwave" data-load="1200">Add</button></div>
+            <div class="appliance-item"><p>Television<br>100 Watts</p><button class="add-appliance" data-name="Television" data-load="100">Add</button></div>
+            <div class="appliance-item"><p>Laptop<br>50 Watts</p><button class="add-appliance" data-name="Laptop" data-load="50">Add</button></div>
+            <div class="appliance-item"><p>Heater<br>1500 Watts</p><button class="add-appliance" data-name="Heater" data-load="1500">Add</button></div>
+            <div class="appliance-item"><p>Toaster<br>800 Watts</p><button class="add-appliance" data-name="Toaster" data-load="800">Add</button></div>
+            <div class="appliance-item"><p>Oven<br>2000 Watts</p><button class="add-appliance" data-name="Oven" data-load="2000">Add</button></div>
+            <div class="appliance-item"><p>Iron<br>1200 Watts</p><button class="add-appliance" data-name="Iron" data-load="1200">Add</button></div>
+            <div class="appliance-item"><p>Blender<br>500 Watts</p><button class="add-appliance" data-name="Blender" data-load="500">Add</button></div>
+            <div class="appliance-item"><p>Hair Dryer<br>1000 Watts</p><button class="add-appliance" data-name="Hair Dryer" data-load="1000">Add</button></div>
+            <div class="appliance-item"><p>Dishwasher<br>1200 Watts</p><button class="add-appliance" data-name="Dishwasher" data-load="1200">Add</button></div>
+            <div class="appliance-item"><p>Water Heater<br>3000 Watts</p><button class="add-appliance" data-name="Water Heater" data-load="3000">Add</button></div>
+            <div class="appliance-item"><p>Ceiling Fan<br>70 Watts</p><button class="add-appliance" data-name="Ceiling Fan" data-load="70">Add</button></div>
+            <div class="appliance-item"><p>Vacuum Cleaner<br>1000 Watts</p><button class="add-appliance" data-name="Vacuum Cleaner" data-load="1000">Add</button></div>
+            <div class="appliance-item"><p>Fridge<br>250 Watts</p><button class="add-appliance" data-name="Fridge" data-load="250">Add</button></div>
+            <div class="appliance-item"><p>Air Purifier<br>50 Watts</p><button class="add-appliance" data-name="Air Purifier" data-load="50">Add</button></div>
+
+        </div>
+
+        </div>
+    </section>
+
+    <!-- About Us Section -->
+    <section id="about" class="section about-section">
+        <!-- Load Calculation Table -->
+        <h2 id="calculation">Selected Appliances</h2>
+        <table id="appliance-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Load (Watts)</th>
+                    <th>Quantity</th>
+                    <th>Remove</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Rows will be added dynamically -->
+            </tbody>
+        </table>
+        <!-- Feedback -->
+        <div id="load-feedback"></div>
+        <div id="warn"></div>
+   
+    </section>
+
+    <!-- Contact Us Section -->
+    <section id="contact" class="section contact-section">
+        <div class="contact-content">
+            <div class="card glass-effect">
+                <div class="card-content">
+                    <h2>Contact Us</h2>
+                    <p>Get in touch with us through our contact details.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script>
+        $(document).ready(function() {
+            const $applianceTable = $('#appliance-table tbody');
+            const $loadFeedback = $('#load-feedback');
+            const $warn = $('#warn');
+
+            // Handle adding appliances from the grid
+            $('.add-appliance').click(function() {
+                const name = $(this).data('name');
+                const load = $(this).data('load');
+                let row = $applianceTable.find(`tr[data-name="${name}"]`);
+                if (row.length) {
+                    let quantityInput = row.find('.quantity-input');
+                    quantityInput.val(parseInt(quantityInput.val()) + 1);
+                } else {
+                    $applianceTable.append(`
+                        <tr data-name="${name}">
+                            <td>${name}</td>
+                            <td>${load}</td>
+                            <td><input type="number" class="quantity-input" value="1" min="1" style="width: 60px;"></td>
+                            <td><button class="remove-appliance">Remove</button></td>
+                        </tr>
+                    `);
+                }
+                updateLoadCalculation();
+            });
+
+            // Handle removing appliances
+            $applianceTable.on('click', '.remove-appliance', function() {
+                $(this).closest('tr').remove();
+                updateLoadCalculation();
+            });
+
+            // Handle custom appliance addition
+            $('#add-custom-appliance').click(function() {
+                const name = $('#custom-name').val();
+                const load = $('#custom-load').val();
+                const quantity = $('#custom-quantity').val();
+                if (name && load && quantity) {
+                    $applianceTable.append(`
+                        <tr data-name="${name}">
+                            <td>${name}</td>
+                            <td>${load}</td>
+                            <td><input type="number" class="quantity-input" value="${quantity}" min="1" style="width: 60px;"></td>
+                            <td><button class="remove-appliance">Remove</button></td>
+                        </tr>
+                    `);
+                    $('#custom-name').val('');
+                    $('#custom-load').val('');
+                    $('#custom-quantity').val('');
+                    updateLoadCalculation();
+                }
+            });
+
+            // Update load calculation
+            function updateLoadCalculation() {
+                let totalLoad = 0;
+                $applianceTable.find('tr').each(function() {
+                    const load = parseFloat($(this).find('td').eq(1).text());
+                    const quantity = parseInt($(this).find('.quantity-input').val());
+                    totalLoad += load * quantity;
+                });
+
+                const maxKVA = parseFloat($('#max-kva').val());
+                const powerFactor = parseFloat($('#power-factor').val());
+                const totalKVA = totalLoad / (powerFactor * 1000);
+
+                $loadFeedback.text(`Total Load: ${totalLoad} Watts (${totalKVA.toFixed(2)} kVA)`);
+
+                if (totalKVA > maxKVA) {
+                    $warn.text(`Warning: Total kVA exceeds maximum allowable kVA (${maxKVA} kVA)`);
+                } else {
+                    $warn.text('');
+                }
+            }
+
+            // Handle input changes
+            $('#max-kva, #power-factor').on('input', updateLoadCalculation);
+        });
+    </script>
+    <script>
+        // Smooth Scroll for Navigation Links
+        document.querySelectorAll('nav a').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>

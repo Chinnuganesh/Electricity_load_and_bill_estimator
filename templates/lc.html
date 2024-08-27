@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Load Calculator</title>
+    <style>
+        body {
+            align-items: center;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(145deg, #0f3460, #1a1a2e);
+            color: #000000;
+            line-height: 1.6;
+            font-weight: bold;
+        }
+
+         /* Glassmorphism Effect */
+         .glass-effect {
+            background: rgba(255, 255, 255, 0.1); /* Transparent white background */
+            border-radius: 15px; /* Rounded corners */
+            backdrop-filter: blur(10px); /* Blurring the background */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Slight shadow */
+            border: 1px solid rgba(255, 255, 255, 0.2); /* Light border */
+        }
+
+        /* Navigation Bar */
+nav {
+    position: fixed; /* Stay fixed at the top */
+    top: 0;
+    left: 0;
+    width: 98%;
+    z-index: 100; /* Ensure it stays on top */
+    display: flex;
+    align-items: center;
+    background: rgba(22, 33, 62, 0.8); /* Semi-transparent background */
+    padding: 0.5rem 0.5rem; /* Reduced padding */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    --nav-height: 60px; /* Define custom property for nav height */
+}
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        nav .logo img {
+            height: 30px; /* Adjusted height */
+            width: 30px;  /* Adjusted width */
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 1rem; /* Add some space between the logo and the text */
+        }
+
+        nav h1 {
+            font-size: 1rem; /* Adjusted font size */
+            color: #fff;
+        }
+
+        nav .nav-links {
+            display: flex;
+            align-items: center;
+            margin-left: auto;
+        }
+
+        nav a {
+          
+          text-decoration: none;
+          color: #ffffff;
+          font-size: 0.9rem; /* Reduced font size */
+          font-weight: bold; /* Makes the font bold */
+          transition: color 0.3s, transform 0.3s;
+      }
+
+
+        .container {
+            width: 95%;
+            margin: auto;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+            margin-top: 75px;
+            margin-bottom: 75px;
+            align-items: center;
+        }
+
+        h2 {
+            color:#ffcc00;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 5px;
+            margin-bottom: 20px;
+        }
+
+        .appliance-grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .appliance-item {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
+            border: 2px solid #ddd;
+            padding: 5px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            font-weight: bold;
+        }
+
+        .appliance-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .appliance-item button {
+            background-color: rgba(22, 33, 62, 0.7);
+            color: #fff;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+
+        .appliance-item button:hover {
+            background-color: #0056b3;
+        }
+
+        .appliance-item img{
+            height: 50px;
+            width: 50px;
+            padding-bottom: 0px;
+            margin: 0px;
+        }
+
+        .appliance-item p{
+
+            color: #000000;
+          
+            padding: 1px;
+            margin: 1px;
+
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(8px);
+        
+            overflow: hidden;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        table th {
+            background-color: rgba(22, 33, 62, 0.7);
+            color: #fff;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        button {
+            background-color: rgba(22, 33, 62, 0.7);
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        form label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        form input {
+            width: 80px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        #custom-appliance-form input {
+            width: 30px;
+        }
+
+        #load-feedback {
+            font-size: 16px;
+            font-weight: bold;
+            color: #ffffff;
+        }
+
+        #warn {
+            color: red;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        input {
+            width: 800px;
+            text-align: center;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        /* Custom Appliance Form Styling */
+#custom-appliance-form {
+    display: flex;
+    flex-direction: column;
+   
+    gap: 8px; /* Space between form elements */
+    margin: 80px;
+    padding: 5px;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    background: rgba(255, 255, 255, 0.2); /* Semi-transparent background */
+    backdrop-filter: blur(10px); /* Blurring the background */
+    border: 1px solid rgba(255, 255, 255, 0.3); /* Light border */
+    align-items: center;
+}
+
+#custom-appliance-form label {
+    font-weight: bold;
+    color: #ffffff;
+}
+
+#custom-appliance-form input {
+    width: 30%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+#custom-appliance-form button {
+    background-color: rgba(22, 33, 62, 0.8);
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+
+}
+
+#custom-appliance-form button:hover {
+    background-color: #0056b3;
+}
+
+#custom-appliance-form input::placeholder {
+    color: #888;
+}
+
+#preloader {
+    /* Center the preloader on the page */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    /* Set the initial visibility to visible */
+    visibility: visible;
+    /* Adjust the z-index to control stacking order */
+    z-index: 100;
+    /* Set the width and height for the preloader circle */
+    width: 100%;
+    height: 100%;
+    /* Optionally, you can style the preloader further */
+    /* For example, adjust the background color, border-radius, etc. */
+    background-color: rgb(255, 255, 255);
+    /* Center the preloader image within the circle */
+    background-image: url("{{ url_for('static', filename='preloader.gif') }}");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 30%; /* Adjust the size of the preloader image */
+}
+
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div id="preloader"></div>
+    <nav class="glass-effect">
+        <div class="logo-container">
+            <div class="logo">
+                <img src="{{ url_for('static', filename='logo.jpg') }}" alt="Logo">
+            </div>
+            <a href ="/home"><h1>Electricity Load Calculator</h1></a>
+        </div>
+
+    </nav>
+
+    <div class="container">
+        <!-- Power Factor and Maximum kVA -->
+        <table>
+            <tbody>
+                <tr>
+                    <th>
+                        <h2>Maximum kVA Value</h2>
+                        <form id="max-kva-form">
+                            <label for="max-kva">Set Maximum kVA: <input type="number" id="max-kva" step="0.01" min="0.01" value="1" required> </label>
+                            
+                        </form>
+                    </th>
+                    <th>
+                        <h2>Power Factor</h2>
+                        <form id="power-factor-form">
+                            <label for="power-factor">Set Power Factor:  <input type="number" id="power-factor" step="0.01" min="0.1" max="1.0" value="0.8" required></label>
+                           
+                        </form>
+                    </th>
+                </tr>
+
+            </tbody>
+            
+        </table>
+    </div>
+
+    <div class="container">
+
+        <!-- Appliance List -->
+        <h2>Available Appliances</h2>
+        <div class="appliance-grid">
+            <div class="appliance-item"><img src="{{ url_for('static', filename='icons/Bulb.svg') }}" alt="Logo"><p>Bulb<br>10 Watts</p><button class="add-appliance" data-name="Bulb" data-load="10">Add</button></div>
+            <div class="appliance-item"><img src="{{ url_for('static', filename='icons/fan.svg') }}" alt="Logo"><p>Fan<br>75 Watts</p><button class="add-appliance" data-name="Fan" data-load="75">Add</button></div>
+            <div class="appliance-item"><img src="{{ url_for('static', filename='icons/ac.svg') }}" alt="Logo"><p>AC<br>1500 Watts</p><button class="add-appliance" data-name="AC" data-load="1500">Add</button></div>
+            <div class="appliance-item"><img src="{{ url_for('static', filename='icons/refrigerator.svg') }}" alt="Logo"><p>Refrigerator<br>200 Watts</p><button class="add-appliance" data-name="Refrigerator" data-load="200">Add</button></div>
+            <div class="appliance-item"><img src="{{ url_for('static', filename='icons/Washing Machine.svg') }}" alt="Logo"><p>Washing Machine<br>500 Watts</p><button class="add-appliance" data-name="Washing Machine" data-load="500">Add</button></div>
+            <div class="appliance-item"><img src="{{ url_for('static', filename='icons/Microwave.svg') }}" alt="Logo"><p>Microwave<br>1200 Watts</p><button class="add-appliance" data-name="Microwave" data-load="1200">Add</button></div>
+            <div class="appliance-item"><img src="{{ url_for('static', filename='icons/Television.svg') }}" alt="Logo"><p>Television<br>100 Watts</p><button class="add-appliance" data-name="Television" data-load="100">Add</button></div>
+            <div class="appliance-item"><img src="{{ url_for('static', filename='icons/Laptop.svg') }}" alt="Logo"><p>Laptop<br>50 Watts</p><button class="add-appliance" data-name="Laptop" data-load="50">Add</button></div>
+            <div class="appliance-item"><img src="{{ url_for('static', filename='icons/heater.svg') }}" alt="Logo"><p>Heater<br>1500 Watts</p><button class="add-appliance" data-name="Heater" data-load="1500">Add</button></div>
+            <div class="appliance-item"><img src="{{ url_for('static', filename='icons/Toaster.svg') }}" alt="Logo"><p>Toaster<br>800 Watts</p><button class="add-appliance" data-name="Toaster" data-load="800">Add</button></div>
+            <div class="appliance-item"><img src="{{ url_for('static', filename='icons/Oven.svg') }}" alt="Logo"><p>Oven<br>2000 Watts</p><button class="add-appliance" data-name="Oven" data-load="2000">Add</button></div>
+            <div class="appliance-item"><img src="{{ url_for('static', filename='icons/iron.svg') }}" alt="Logo"><p>Iron box<br>1200 Watts</p><button class="add-appliance" data-name="Iron box" data-load="1200">Add</button></div>
+            <div class="appliance-item"><img src="{{ url_for('static', filename='icons/Blender.svg') }}" alt="Logo"><p>Blender<br>500 Watts</p><button class="add-appliance" data-name="Blender" data-load="500">Add</button></div>
+            <div class="appliance-item"><img src="{{ url_for('static', filename='icons/Hair Dryer.svg') }}" alt="Logo"><p>Hair Dryer<br>1000 Watts</p><button class="add-appliance" data-name="Hair Dryer" data-load="1000">Add</button></div>
+            <div class="appliance-item"><img src="{{ url_for('static', filename='icons/Dishwasher.svg') }}" alt="Logo"><p>Dishwasher<br>1200 Watts</p><button class="add-appliance" data-name="Dishwasher" data-load="1200">Add</button></div>
+            <div class="appliance-item"><img src="{{ url_for('static', filename='icons/water heater.svg') }}" alt="Logo"><p>Water Heater<br>3000 Watts</p><button class="add-appliance" data-name="Water Heater" data-load="3000">Add</button></div>
+            <div class="appliance-item"><img src="{{ url_for('static', filename='icons/Ceiling Fan.svg') }}" alt="Logo"><p>Ceiling Fan<br>70 Watts</p><button class="add-appliance" data-name="Ceiling Fan" data-load="70">Add</button></div>
+            <div class="appliance-item"><img src="{{ url_for('static', filename='icons/Vacuum Cleaner.svg') }}" alt="Logo"><p>Vacuum Cleaner<br>1000 Watts</p><button class="add-appliance" data-name="Vacuum Cleaner" data-load="1000">Add</button></div>
+            <div class="appliance-item"><img src="{{ url_for('static', filename='icons/bed bulb.svg') }}" alt="Logo"><p>Bed Bulb<br>1 Watts</p><button class="add-appliance" data-name="bed bulb" data-load="1">Add</button></div>
+            <div class="appliance-item"><img src="{{ url_for('static', filename='icons/Air Purifier.svg') }}" alt="Logo"><p>Air Purifier<br>50 Watts</p><button class="add-appliance" data-name="Air Purifier" data-load="50">Add</button></div>
+             </div>
+
+
+        <div class="container">
+        <!-- Custom Appliance Form -->
+<h2>Add Custom Appliance</h2>
+<form id="custom-appliance-form" class="glass-effect">
+    <label for="custom-name">Appliance Name:</label>
+    <input type="text" id="custom-name" required>
+    <label for="custom-load">Load (Watts):</label>
+    <input type="number" id="custom-load" step="0.01" min="0.01" required>
+    <label for="custom-quantity">Quantity:</label>
+    <input type="number" id="custom-quantity" min="1" value="1" required>
+    <button type="button" id="add-custom-appliance">Add Appliance</button>
+</form>
+</div>
+
+
+        </div>
+
+        <div class="container">
+        <!-- Load Calculation Table -->
+        <h2 id="calculation">Selected Appliances</h2>
+        <table id="appliance-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Load (Watts)</th>
+                    <th>Quantity</th>
+                    <th>Remove</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Rows will be added dynamically -->
+            </tbody>
+        </table>
+        <!-- Feedback -->
+        <div id="load-feedback"></div>
+        <div id="warn"></div>
+        <button id="recommendations-button">Get Recommendations</button>
+
+    </div>
+
+</div>
+<script>
+    $(document).ready(function() {
+    const $applianceTable = $('#appliance-table tbody');
+    const $loadFeedback = $('#load-feedback');
+    const $warn = $('#warn');
+
+    // Handle adding appliances from the grid
+    $('.add-appliance').click(function() {
+        const name = $(this).data('name');
+        const load = $(this).data('load');
+        let row = $applianceTable.find(`tr[data-name="${name}"]`);
+        if (row.length) {
+            let quantityInput = row.find('.quantity-input');
+            quantityInput.val(parseInt(quantityInput.val()) + 1);
+        } else {
+            $applianceTable.append(`
+                <tr data-name="${name}">
+                    <td>${name}</td>
+                    <td>${load}</td>
+                    <td><input type="number" class="quantity-input" value="1" min="1" style="width: 60px;"></td>
+                    <td><button class="remove-appliance">Remove</button></td>
+                </tr>
+            `);
+        }
+        updateLoadCalculation();
+    });
+
+    // Handle removing appliances
+    $applianceTable.on('click', '.remove-appliance', function() {
+        $(this).closest('tr').remove();
+        updateLoadCalculation();
+    });
+
+    // Handle custom appliance addition
+    $('#add-custom-appliance').click(function() {
+        const name = $('#custom-name').val();
+        const load = $('#custom-load').val();
+        const quantity = $('#custom-quantity').val();
+        if (name && load && quantity) {
+            $applianceTable.append(`
+                <tr data-name="${name}">
+                    <td>${name}</td>
+                    <td>${load}</td>
+                    <td><input type="number" class="quantity-input" value="${quantity}" min="1" style="width: 60px;"></td>
+                    <td><button class="remove-appliance">Remove</button></td>
+                </tr>
+            `);
+            $('#custom-name').val('');
+            $('#custom-load').val('');
+            $('#custom-quantity').val('');
+            updateLoadCalculation();
+        }
+    });
+
+    // Update load calculation
+    function updateLoadCalculation() {
+        let totalLoad = 0;
+        $applianceTable.find('tr').each(function() {
+            const load = parseFloat($(this).find('td').eq(1).text());
+            const quantity = parseInt($(this).find('.quantity-input').val());
+            totalLoad += load * quantity;
+        });
+
+        const maxKVA = parseFloat($('#max-kva').val());
+        const powerFactor = parseFloat($('#power-factor').val());
+        const totalKVA = totalLoad / (powerFactor * 1000);
+
+        $loadFeedback.text(`Total Load: ${totalLoad} Watts (${totalKVA.toFixed(2)} kVA)`);
+
+        if (totalKVA > maxKVA) {
+            $warn.text(`Warning: Total kVA exceeds maximum allowable kVA (${maxKVA} kVA)`);
+        } else {
+            $warn.text('');
+        }
+    }
+
+    // Handle input changes
+    $('#max-kva, #power-factor').on('input', updateLoadCalculation);
+
+    // Handle quantity changes
+    $applianceTable.on('input', '.quantity-input', updateLoadCalculation);
+
+    //
+    $('#recommendations-button').click(function() {
+    let appliances = [];
+    $applianceTable.find('tr').each(function() {
+        let name = $(this).find('td:eq(0)').text();
+        let power = $(this).find('td:eq(1)').text();
+        let quantity = $(this).find('.quantity-input').val();
+        appliances.push({ name, power, quantity });
+    });
+
+    // Convert the appliances array to a JSON string and encode it
+    let encodedAppliances = encodeURIComponent(JSON.stringify(appliances));
+
+    // Open a new tab and pass the encoded appliances data to the new route
+    window.open('/get_recommendations?appliances=' + encodedAppliances, '_blank');
+});
+
+
+});
+
+    </script>
+
+
+<script>
+    var loader = document.getElementById("preloader");
+    var startTime = new Date().getTime();
+    var pageLoaded = false;
+
+    // Function to hide the preloader
+    function hidePreloader() {
+        loader.style.visibility = "hidden";
+    }
+
+    // Function to handle when the page is fully loaded
+    function onPageLoaded() {
+        pageLoaded = true;
+        var currentTime = new Date().getTime();
+        var timeDiff = currentTime - startTime;
+        var minDisplayTime = 800; // 1 seconds
+        var remainingTime = minDisplayTime - timeDiff;
+
+        if (remainingTime <= 0) {
+            hidePreloader();
+        } else {
+            setTimeout(hidePreloader, remainingTime);
+        }
+    }
+
+    // Hide the preloader after 1 seconds (minimum display time)
+    setTimeout(hidePreloader, 800);
+
+    // Check if the page is fully loaded, and if so, hide the preloader
+    window.addEventListener("load", onPageLoaded);
+</script>
+
+
+</body>
+</html>
