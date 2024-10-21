@@ -5,7 +5,7 @@ import os
 app = Flask(__name__)
 
 # Set your Gemini API key here
-genai.configure(api_key='AIzaSyC_IONOCrNSOArNFs0BlnKQ_9W0UH2EqPE')
+genai.configure(api_key='AIzaSyBcKSvunDus17twIGzMC4_slcNLYtVhGEQ')
 
 
 # Initialize the model
@@ -17,7 +17,7 @@ def preprocess_recommendations(recommendations):
 
     # Replace '*' with a newline '\n'
     recommendations = recommendations.replace('*', ' ')
-    recommendations = recommendations.replace('    ', '')
+    recommendations = recommendations.replace('    ', '\n')
 
     # Ensure consistent formatting with additional newlines
     recommendations = recommendations.replace('\n\n', '\n').strip()
@@ -57,9 +57,6 @@ def get_recommendations():
     recommendations = response.text.strip()
     recommendations = preprocess_recommendations(recommendations)
 
-
-    print(recommendations)
-
     # Return the recommendations as plain text
     return render_template('lc_recommendations.html', recommendations=recommendations)
 
@@ -86,6 +83,51 @@ def generate_recommendations(appliances):
 @app.route('/bill_estimator', methods=['GET', 'POST'])
 def bill_estimator():
     return render_template('be.html')
+
+@app.route('/get_recommendations_be')
+def get_recommendations_be():
+    # Retrieve the JSON data from the request
+    data = request.args.get('data')
+    decoded_data = json.loads(data)
+    
+    # Extract the information from the data
+    appliances = decoded_data['appliances']
+    maxbudget = decoded_data['maxbudget']
+    ratePerKWh = decoded_data['ratePerKWh']
+    unitsConsumed = decoded_data['unitsConsumed']
+    billEstimation = decoded_data['billEstimation']
+    
+    # Implement your logic for generating recommendations here
+    prompt = generate_prompt_billestimation(appliances, maxbudget, ratePerKWh, unitsConsumed, billEstimation)
+    # Call the Gemini API
+    response = model.generate_content(prompt)
+    # Get the text from the Gemini response and preprocess it
+    recommendations = response.text.strip()
+    recommendations = preprocess_recommendations(recommendations)
+    # Return the recommendations as plain text
+    return render_template('be_recommendations.html', recommendations=recommendations)
+    
+
+def generate_prompt_billestimation(appliances, maxbudget, ratePerKWh, unitsConsumed, billEstimation):
+    # Format appliances data for inclusion in the prompt
+    appliances_str = ", ".join([f"{appliance['name']} (Power: {appliance['power']} Watts, Quantity: {appliance['quantity']})" for appliance in appliances])
+    
+    # Format bill estimation data for inclusion in the prompt
+    bill_str = f"Per Hour: ₹{billEstimation['perHour']}, Per Day: ₹{billEstimation['perDay']}, Per Month: ₹{billEstimation['perMonth']}, Per Year: ₹{billEstimation['perYear']}"
+
+    # Construct the prompt string
+    prompt = (f"I was given the following home appliances and their load details. "
+              f"Provide recommendations for suitable usage of all my appliances where the monthly bill is within my maximum budget (location: India):\n"
+              f"Appliances details: {appliances_str}\n"
+              f"Calculated bill for appliances and usage is: {bill_str}\n"
+              f"Per kWh price in India: {ratePerKWh} rupees consider it as he price in india now \n"
+              f"Monthly max budget: {maxbudget} rupees\n"
+              f"Based on the load and my monthly budget, suggest how to use the appliances for better utilization and to ensure the cost of the bill is under my maximum budget per month.")
+    
+    print(prompt)
+    return prompt
+
+
 
 # Run the Flask app
 if __name__ == '__main__':

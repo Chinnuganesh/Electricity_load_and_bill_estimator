@@ -199,7 +199,7 @@
         }
 
         form input {
-            width: 30px;
+            width: 70px;
             padding: 10px;
             border: 1px solid #ddd;
             border-radius: 5px;
@@ -269,7 +269,7 @@
         }
 
         input {
-            width: 30px;
+            width: 40px;
             text-align: center;
             padding: 10px;
             border: 1px solid #ddd;
@@ -308,10 +308,34 @@
                 <img src="{{ url_for('static', filename='logo.jpg') }}" alt="Logo">
             </div>
             <a href ="/home"><h1> Power Bill Estimator</h1></a>
-        </div>
-        
-      
+        </div> 
     </nav>
+
+    <div class="container">
+        <!-- Power Factor and Maximum kVA -->
+        <table>
+            <tbody>
+                <tr></tr>
+                    <th>
+                        <h2>Per Unit Cost in Rupees </h2>
+                        <form id="ratePerKWh-form">
+                            <label for="ratePerKWh">Set Per Unit Cost:  <input type="number" id="ratePerKWh" step="0.01" min="0.0"  value="3.5" required></label>
+                        </form>
+                    </th>
+
+                    <th>
+                        <h2>Maximum Budget Per Month in Rupees</h2>
+                        <form id="maxbudget-form">
+                            <label for="Maxbudget">Set Max Budget Per Month: <input type="number" id="Maxbudget" step="1" min="0" value="100" required> </label>
+                            
+                        </form>
+                    </th>
+                </tr>
+
+            </tbody>
+            
+        </table>
+    </div>
 
     <div class="container">
         <!-- Appliance List -->
@@ -394,7 +418,15 @@
                         <div id="units-feedback"></div>
                     </th>
                 </tbody>
+                <div id="warn"></div>
             </table>
+
+            <div class="container">
+                <!-- Button to get recommendations -->
+                <button id="recommendations-button">Get Recommendations</button>
+            </div>
+            
+           
             </div>
       
 
@@ -404,55 +436,70 @@
        $(document).ready(function() {
     const $estimationTable = $('#estimation-table tbody');
     const maxKVA = 1; // Default max kVA value
+   
+    const $warn = $('#warn');
 
     // Function to calculate and display the bill
     function calculateBill() {
-        let totalLoad = 0;
+    const maxbudget = parseFloat($('#Maxbudget').val());
+    let totalLoadPerDay = 0; // Total daily load in watt-hours
 
-        $estimationTable.find('tr').each(function() {
-            const load = parseFloat($(this).find('td:eq(1)').text());
-            const hours = parseFloat($(this).find('.hours').val());
-            const quantity = parseFloat($(this).find('.quantity').val());
+    // Calculate total daily load from all appliances
+    $estimationTable.find('tr').each(function() {
+        const load = parseFloat($(this).find('td:eq(1)').text()); // Load in watts
+        const hours = parseFloat($(this).find('.hours').val()); // Hours of usage per day
+        const quantity = parseFloat($(this).find('.quantity').val()); // Number of appliances
 
-            if (!isNaN(load) && !isNaN(hours) && !isNaN(quantity)) {
-                totalLoad += load * hours * quantity;
-            }
-        });
-
-        const totalKVA = totalLoad / 1000;
-        const unitsPerHour = totalLoad / 1000; // kWh
-        const unitsPerDay = unitsPerHour * 24;
-        const unitsPerMonth = unitsPerDay * 30;
-        const unitsPerYear = unitsPerMonth * 12;
-
-        const ratePerKWh = 0.15; // Example rate per kWh
-        const billPerHour = (unitsPerHour * ratePerKWh).toFixed(2);
-        const billPerDay = (unitsPerDay * ratePerKWh).toFixed(2);
-        const billPerMonth = (unitsPerMonth * ratePerKWh).toFixed(2);
-        const billPerYear = (unitsPerYear * ratePerKWh).toFixed(2);
-
-        $('#units-feedback').html(`
-            <p>Units Consumed:</p>
-            <p>Per Hour: ${unitsPerHour.toFixed(2)} kWh</p>
-            <p>Per Day: ${unitsPerDay.toFixed(2)} kWh</p>
-            <p>Per Month: ${unitsPerMonth.toFixed(2)} kWh</p>
-            <p>Per Year: ${unitsPerYear.toFixed(2)} kWh</p>
-        `);
-
-        $('#bill-feedback').html(`
-            <p>Bill:</p>
-            <p>Per Hour: ₹${billPerHour}</p>
-            <p>Per Day: ₹${billPerDay}</p>
-            <p>Per Month: ₹${billPerMonth}</p>
-            <p>Per Year: ₹${billPerYear}</p>
-        `);
-
-        if (totalKVA > maxKVA) {
-            $('#warn').text('Warning: Total kVA exceeds the maximum allowable kVA!');
-        } else {
-            $('#warn').empty();
+        if (!isNaN(load) && !isNaN(hours) && !isNaN(quantity)) {
+            totalLoadPerDay += load * hours * quantity; // Watt-hours per day
         }
+    });
+
+    // Convert total daily load to kWh (1000 Wh = 1 kWh)
+    const totalLoadPerDayKWh = totalLoadPerDay / 1000;
+    // Calculate monthly and yearly consumption
+    const unitsPerMonth = totalLoadPerDayKWh * 30; // kWh per month
+    const unitsPerYear = unitsPerMonth * 12; // kWh per year
+
+    const ratePerKWh = parseFloat($('#ratePerKWh').val());
+
+    // Calculate the bill
+    const billPerDay = (totalLoadPerDayKWh * ratePerKWh).toFixed(2);
+    const billPerMonth = (unitsPerMonth * ratePerKWh).toFixed(2);
+    const billPerYear = (unitsPerYear * ratePerKWh).toFixed(2);
+
+    // Update the feedback on units consumed
+    $('#units-feedback').html(`
+        <u><p>Units Consumed</p></u>
+        <p>Per Day: ${totalLoadPerDayKWh.toFixed(2)} kWh</p>
+        <p>Per Month: ${unitsPerMonth.toFixed(2)} kWh</p>
+        <p>Per Year: ${unitsPerYear.toFixed(2)} kWh</p>
+    `);
+
+    // Update the feedback on the bill
+    $('#bill-feedback').html(`
+        <u><p>Bill</p></u>
+        <p>Per Day: ₹${billPerDay}</p>
+        <p>Per Month: ₹${billPerMonth}</p>
+        <p>Per Year: ₹${billPerYear}</p>
+    `);
+
+    // Check if the monthly bill exceeds the budget
+    if (parseFloat(billPerMonth) > maxbudget) {
+        $warn.text(`Warning: Monthly budget of ₹${maxbudget} is exceeded (₹${billPerMonth}). Reduce the load.`);
+    } else {
+        $warn.text('');
     }
+}
+
+
+    
+    // Handle input changes
+    $('#ratePerKWh').on('input', calculateBill);
+
+        
+    // Handle input changes
+    $('#Maxbudget').on('input', calculateBill);
 
     // Add appliance event
     $('.add-appliance').click(function() {
@@ -504,6 +551,51 @@
             alert('Please fill in all required fields correctly.');
         }
     });
+
+    $('#recommendations-button').click(function() {
+            let appliances = [];
+
+            // Collect appliance data from the estimation table
+            $estimationTable.find('tr').each(function() {
+                let name = $(this).find('td:eq(0)').text();
+                let power = parseFloat($(this).find('td:eq(1)').text());
+                let hours = parseFloat($(this).find('.hours').val());
+                let quantity = parseFloat($(this).find('.quantity').val());
+
+                appliances.push({ name, power, hours, quantity });
+            });
+
+            // Collect the bill and budget information
+            let maxbudget = parseFloat($('#Maxbudget').val());
+            let ratePerKWh = parseFloat($('#ratePerKWh').val());
+
+            let unitsConsumed = {
+                perHour: parseFloat($('#units-feedback').find('p:eq(1)').text().split(': ')[1]),
+                perDay: parseFloat($('#units-feedback').find('p:eq(2)').text().split(': ')[1]),
+                perMonth: parseFloat($('#units-feedback').find('p:eq(3)').text().split(': ')[1]),
+                perYear: parseFloat($('#units-feedback').find('p:eq(4)').text().split(': ')[1])
+            };
+
+            let billEstimation = {
+                perHour: parseFloat($('#bill-feedback').find('p:eq(1)').text().split('₹')[1]),
+                perDay: parseFloat($('#bill-feedback').find('p:eq(2)').text().split('₹')[1]),
+                perMonth: parseFloat($('#bill-feedback').find('p:eq(3)').text().split('₹')[1]),
+                perYear: parseFloat($('#bill-feedback').find('p:eq(4)').text().split('₹')[1])
+            };
+
+            // Create a JSON object with all the data
+            let data = {
+                appliances: appliances,
+                maxbudget: maxbudget,
+                ratePerKWh: ratePerKWh,
+                unitsConsumed: unitsConsumed,
+                billEstimation: billEstimation
+            };
+
+            // Send the data to the backend via a GET request
+            let encodedData = encodeURIComponent(JSON.stringify(data));
+            window.open('/get_recommendations_be?data=' + encodedData, '_blank');
+        });
 });
 
     </script>
